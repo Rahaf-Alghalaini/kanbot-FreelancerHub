@@ -1,0 +1,40 @@
+/* Charts (burndown, velocity), export menu and the chat's quick suggestions */
+.chart-card { margin-bottom: 16px; padding: 16px; border-radius: 22px; background: var(--surface-2); }
+.chart-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.chart-head h3 { font-size: 15px; }
+.chart-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+.chart-meta { margin-inline-start: auto; color: var(--muted); font-size: 13px; }
+.chart-badge { padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.chart-badge.ahead { background: var(--green-l); color: var(--green-fg); }
+.chart-badge.behind { background: var(--danger-l); color: var(--danger-fg); }
+.chart-badge.onTrack { background: var(--blue-bg); color: var(--blue-fg); }
+.chart-wrap { width: 100%; margin-top: 10px; overflow: hidden; }
+.chart-svg { display: block; direction: ltr; } /* time runs left to right in every language */
+.chart-svg text { fill: var(--muted); font-size: 11px; font-family: inherit; letter-spacing: 0; }
+.chart-svg text.chart-value { fill: var(--ink); font-weight: 600; }
+.chart-grid { stroke: var(--line); stroke-width: 1; }
+.chart-ideal { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+.chart-actual { fill: none; stroke: var(--indigo); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.chart-dot { fill: var(--indigo); stroke: var(--surface-2); stroke-width: 2; }
+.chart-bar-total { fill: var(--c-blue); opacity: .35; }
+.chart-bar-done { fill: var(--indigo); }
+.chart-avg { stroke: var(--c-green); stroke-width: 2; stroke-dasharray: 6 5; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; color: var(--muted); font-size: 12px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-key { display: inline-block; width: 18px; height: 0; border-top: 3px solid; }
+.chart-key.actual { border-color: var(--indigo); }
+.chart-key.ideal { border-top-style: dashed; border-color: var(--muted); }
+.chart-key.avg { border-top-style: dashed; border-color: var(--c-green); }
+.chart-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; }
+.chart-swatch.total { background: var(--c-blue); opacity: .35; }
+.chart-swatch.done { background: var(--indigo); }
+.chart-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+
+.export-wrap { position: relative; display: inline-block; }
+.head-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.chat-quick { display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 2px; scrollbar-width: thin; }
+.chip-btn.small { flex: none; padding: 5px 12px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
+
+/* The todo dialog footer now holds four buttons; let it wrap on narrow screens */
+.form-actions.split { flex-wrap: wrap; }

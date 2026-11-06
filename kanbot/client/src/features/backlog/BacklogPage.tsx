@@ -3,20 +3,26 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { keepPreviousData, useQueries } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQueries } from '@tanstack/react-query';
 import { Plus, Search, Sparkles } from 'lucide-react';
 import { todosApi } from '../../api/todos';
 import { Button } from '../../components/Button';
 import { EmptyState } from '../../components/EmptyState';
+import { ExportMenu } from '../../components/ExportMenu';
 import { PageLoader } from '../../components/Loader';
+import { useToast } from '../../components/Toast';
 import { useDebounce } from '../../hooks/useDebounce';
 import { rich, t, tpb } from '../../i18n';
 import { useMoveTodo } from '../../hooks/useMoveTodo';
 import { useProject } from '../../hooks/useProjects';
+import { estimatePrompt } from '../../lib/chatPrompts';
 import { boardCollision } from '../../lib/dnd';
+import { backlogToMarkdown, downloadFile, todosToCsv } from '../../lib/export';
+import { todayISO } from '../../lib/format';
 import { useSprintsQuery } from '../../hooks/useSprints';
 import { todoKeys, useTodosQuery } from '../../hooks/useTodos';
 import { PRIORITY_LABEL, TYPE_LABEL } from '../../lib/todo';
+import { useChat } from '../ai/ChatContext';
 import { GenerateTodosDialog } from '../ai/GenerateTodosDialog';
 import { PlanSprintDialog } from '../ai/PlanSprintDialog';
 import { DeleteSprintDialog } from '../sprints/DeleteSprintDialog';
@@ -32,6 +38,28 @@ import { TodoList } from './TodoList';
 export function BacklogPage() {
   const project = useProject();
   const move = useMoveTodo(project.id);
+  const toast = useToast();
+  const { askChat } = useChat();
+
+  // Estimate: send every open todo without story points to the chat, most important first
+  const estimate = useMutation({
+    mutationFn: () => todosApi.list(project.id),
+    onSuccess: ({ todos }) => {
+      const unestimated = todos.filter((x) => x.storyPoints === null && x.status !== 'done');
+      if (unestimated.length === 0) return toast(t('estimate.none'), 'info');
+      askChat(estimatePrompt(unestimated).text);
+    },
+    onError: (e) => toast(e.message, 'error'),
+  });
+
+  // Export the whole backlog (not just the filtered rows on screen)
+  const exportBacklog = async (format: 'md' | 'csv') => {
+    const { todos } = await todosApi.list(project.id, { sprintId: 'backlog' });
+    if (todos.length === 0) return toast(t('backlog.empty'), 'info');
+    const name = `${project.key}-backlog-${todayISO()}.${format}`;
+    downloadFile(name, format === 'md' ? backlogToMarkdown(project, todos) : todosToCsv(todos), format === 'md' ? 'text/markdown' : 'text/csv');
+    toast(t('export.done', { name }), 'success');
+  };
 
   // Sprints (SPR-1)
   const { data: sprintData, error: sprintsError } = useSprintsQuery(project.id);
@@ -120,6 +148,8 @@ export function BacklogPage() {
         <div className="toolbar-actions">
           <Button variant="ghost" onClick={() => setAiDialog('generate')}><Sparkles size={16} /> {t('backlog.generate')}</Button>
           <Button variant="ghost" onClick={() => setAiDialog('plan')}><Sparkles size={16} /> {t('backlog.plan')}</Button>
+          <Button variant="ghost" loading={estimate.isPending} onClick={() => estimate.mutate()}>{!estimate.isPending && <Sparkles size={16} />} {t('backlog.estimate')}</Button>
+          <ExportMenu items={[{ label: t('export.backlogMd'), run: () => exportBacklog('md') }, { label: t('export.backlogCsv'), run: () => exportBacklog('csv') }]} />
           <Button onClick={() => setFormState({ open: true, sprint: null })}><Plus size={16} /> {t('backlog.newSprint')}</Button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { Sparkles } from 'lucide-react';
 import { z } from 'zod';
 import { todosApi } from '../../api/todos';
 import { Button } from '../../components/Button';
@@ -10,9 +11,11 @@ import { Modal } from '../../components/Modal';
 import { useToast } from '../../components/Toast';
 import { useRefreshTodos, useTodoQuery } from '../../hooks/useTodos';
 import { t } from '../../i18n';
+import { improveTodoPrompt } from '../../lib/chatPrompts';
 import { applyServerError } from '../../lib/forms';
 import { PRIORITY_LABEL, STATUS_LABEL, TYPE_LABEL } from '../../lib/todo';
 import { TODO_PRIORITIES, TODO_STATUSES, TODO_TYPES, type StoryPoints, type Todo } from '../../types/api';
+import { useChat } from '../ai/ChatContext';
 import { PointsSelect } from './PointsSelect';
 
 const makeSchema = () =>
@@ -55,13 +58,14 @@ export function TodoDetailsDialog({ todo, onClose }: { todo: Todo | null; onClos
 function Body({ initial, onClose }: { initial: Todo; onClose: () => void }) {
   const toast = useToast();
   const refresh = useRefreshTodos();
+  const { askChat } = useChat();
   const { data, error } = useTodoQuery(initial.id, initial); // BL-3
   const todo = data?.todo ?? initial;
   const [confirming, setConfirming] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const schema = useMemo(makeSchema, []);
 
-  const { register, control, handleSubmit, reset, setError, formState: { errors, isSubmitting } } = useForm<Values>({
+  const { register, control, handleSubmit, reset, setError, getValues, formState: { errors, isSubmitting } } = useForm<Values>({
     resolver: zodResolver(schema),
     defaultValues: toValues(initial),
   });
@@ -77,6 +81,13 @@ function Body({ initial, onClose }: { initial: Todo; onClose: () => void }) {
       onClose();
     },
   });
+
+  // Sends the todo as it is in the form right now (including unsaved edits) to the chat, then closes this dialog.
+  const improve = () => {
+    const v = getValues();
+    askChat(improveTodoPrompt({ key: todo.key, title: v.title, description: v.description, type: v.type, priority: v.priority, storyPoints: v.storyPoints as StoryPoints | null, labels: parseLabels(v.labels) }));
+    onClose();
+  };
 
   const onSubmit = handleSubmit(async (v) => {
     setFormError(null);
@@ -131,7 +142,10 @@ function Body({ initial, onClose }: { initial: Todo; onClose: () => void }) {
             <Button type="button" variant="danger" loading={remove.isPending} onClick={() => remove.mutate()}>{t('todo.yesDelete')}</Button>
           </span>
         ) : (
-          <Button type="button" variant="ghost" className="danger-text" onClick={() => setConfirming(true)}>{t('common.delete')}</Button>
+          <>
+            <Button type="button" variant="ghost" className="danger-text" onClick={() => setConfirming(true)}>{t('common.delete')}</Button>
+            <Button type="button" variant="ghost" onClick={improve}><Sparkles size={16} /> {t('chat.improve.btn')}</Button>
+          </>
         )}
         <span className="spacer" />
         <Button type="button" variant="ghost" onClick={onClose}>{t('common.cancel')}</Button>

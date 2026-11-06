@@ -7,6 +7,7 @@ import { useSprintsQuery } from '../../hooks/useSprints';
 import { formatDate, formatRange } from '../../lib/format';
 import { rich, t, tp } from '../../i18n';
 import type { Sprint } from '../../types/api';
+import { VelocityCard } from '../charts/VelocityCard';
 import { SprintStatusPill } from './SprintStatusPill';
 
 /** SPR-7: GET /projects/:id/sprints (active, planned, then completed newest first). */
@@ -33,6 +34,7 @@ export function SprintsPage() {
 
   return (
     <>
+      <VelocityCard sprints={sprints} />
       {groups.map(([label, list]) =>
         list.length === 0 ? null : (
           <section key={label} className="history-group">

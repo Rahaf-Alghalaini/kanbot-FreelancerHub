@@ -12,6 +12,7 @@ import { t } from '../../i18n';
 import { boardCollision } from '../../lib/dnd';
 import { useSprintBoardQuery, useSprintsQuery } from '../../hooks/useSprints';
 import { SprintSummaryCard } from '../ai/SprintSummaryCard';
+import { BurndownCard } from '../charts/BurndownCard';
 import { CompleteSprintDialog } from '../sprints/CompleteSprintDialog';
 import { TodoDetailsDialog } from '../todos/TodoDetailsDialog';
 import { TypeIcon } from '../todos/TypeIcon';
@@ -105,6 +106,7 @@ function ActiveBoard({ projectId, sprintId }: { projectId: string; sprintId: str
   return (
     <>
       <SprintHeader sprint={sprint} onComplete={() => setCompleting(true)} />
+      <BurndownCard sprint={sprint} todos={TODO_STATUSES.flatMap((s) => columns[s])} />
       <SprintSummaryCard sprint={sprint} />
       <DndContext sensors={sensors} collisionDetection={boardCollision} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={endDrag}>
         <div className="board">

@@ -2,14 +2,18 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { ApiError } from '../../api/client';
 import { Button } from '../../components/Button';
+import { ExportMenu } from '../../components/ExportMenu';
 import { EmptyState } from '../../components/EmptyState';
 import { PageLoader } from '../../components/Loader';
+import { useToast } from '../../components/Toast';
 import { useProject } from '../../hooks/useProjects';
 import { useSprintBoardQuery } from '../../hooks/useSprints';
+import { downloadFile, slug, sprintToMarkdown, todosToCsv } from '../../lib/export';
 import { formatDate, formatRange } from '../../lib/format';
 import { t } from '../../i18n';
 import { STATUS_LABEL } from '../../lib/todo';
 import { SprintSummaryCard } from '../ai/SprintSummaryCard';
+import { BurndownCard } from '../charts/BurndownCard';
 import { progressPercent } from '../board/SprintHeader';
 import { PriorityBadge } from '../todos/PriorityBadge';
 import { TypeIcon } from '../todos/TypeIcon';
@@ -23,6 +27,7 @@ const Tile = ({ label, value, sub }: { label: string; value: string; sub?: strin
 /** SPR-7: one sprint with stats tiles and its tasks. */
 export function SprintDetailsPage() {
   const project = useProject();
+  const toast = useToast();
   const { sprintId } = useParams();
   const { data, isLoading, error, refetch } = useSprintBoardQuery(sprintId);
   const back = <Link className="back-link" to={`/projects/${project.id}/sprints`}><ArrowLeft size={14} className="flip-rtl" /> {t('sprint.allSprints')}</Link>;
@@ -42,6 +47,13 @@ export function SprintDetailsPage() {
   const stats = sprint.completedStats ?? sprint.stats;
   const pct = progressPercent(stats);
 
+  const exportSprint = (format: 'md' | 'csv') => {
+    const name = `${project.key}-${slug(sprint.name)}.${format}`;
+    if (format === 'md') downloadFile(name, sprintToMarkdown(sprint, columns), 'text/markdown');
+    else downloadFile(name, todosToCsv(TODO_STATUSES.flatMap((s) => columns[s]), { [sprint.id]: sprint.name }), 'text/csv');
+    toast(t('export.done', { name }), 'success');
+  };
+
   return (
     <>
       {back}
@@ -54,7 +66,10 @@ export function SprintDetailsPage() {
             {sprint.completedAt && ` · ${t('sprint.completedOn', { date: formatDate(sprint.completedAt) })}`}
           </p>
         </div>
-        {sprint.status === 'active' && <Link className="btn btn-primary" to={`/projects/${project.id}/board`}>{t('sprint.openBoard')}</Link>}
+        <div className="head-actions">
+          <ExportMenu items={[{ label: t('export.sprintMd'), run: () => exportSprint('md') }, { label: t('export.sprintCsv'), run: () => exportSprint('csv') }]} />
+          {sprint.status === 'active' && <Link className="btn btn-primary" to={`/projects/${project.id}/board`}>{t('sprint.openBoard')}</Link>}
+        </div>
       </header>
 
       <div className="tiles">
@@ -63,6 +78,8 @@ export function SprintDetailsPage() {
         <Tile label={t('sprint.tilePoints')} value={`${stats.donePoints}/${stats.totalPoints}`} />
         {sprint.completedStats && <Tile label={t('sprint.tileCarried')} value={String(sprint.completedStats.carriedOver)} sub={t('sprint.tileCarriedSub')} />}
       </div>
+
+      {sprint.status === 'active' && <BurndownCard sprint={sprint} todos={TODO_STATUSES.flatMap((s) => columns[s])} />}
 
       {sprint.status !== 'planned' && <SprintSummaryCard sprint={sprint} />}
 

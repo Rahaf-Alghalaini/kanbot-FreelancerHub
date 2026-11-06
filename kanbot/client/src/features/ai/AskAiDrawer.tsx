@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { RotateCcw, Send, X } from 'lucide-react';
 import { aiApi } from '../../api/ai';
@@ -6,9 +7,11 @@ import { Button } from '../../components/Button';
 import { EmptyState } from '../../components/EmptyState';
 import { ErrorBanner } from '../../components/ErrorBanner';
 import { Markdown } from '../../components/Markdown';
-import { t } from '../../i18n';
+import { t, type Key } from '../../i18n';
 import type { ChatMessage } from '../../types/api';
 import { AiBadge } from './AiBadge';
+import { loadChat, saveChat } from './chatHistory';
+import { useChat } from './ChatContext';
 
 type Props = { open: boolean; projectId?: string; onClose: () => void };
 
@@ -37,12 +40,28 @@ export function AskAiDrawer({ open, projectId, onClose }: Props) {
   );
 }
 
+/** Suggested prompts depend on the page the person is looking at. */
+type ChatPage = 'backlog' | 'board' | 'sprints' | 'general';
+const SUGGESTIONS: Record<ChatPage, readonly Key[]> = {
+  backlog: ['ai.sug.backlog1', 'ai.sug.backlog2', 'ai.sug.backlog3'],
+  board: ['ai.sug.board1', 'ai.sug.board2', 'ai.sug.board3'],
+  sprints: ['ai.sug.sprints1', 'ai.sug.sprints2', 'ai.sug.sprints3'],
+  general: ['ai.sug1', 'ai.sug2', 'ai.sug3'],
+};
+const pageOf = (pathname: string): ChatPage => {
+  const m = pathname.match(/^\/projects\/[^/]+\/(backlog|board|sprints)(?:\/|$)/);
+  return m ? (m[1] as ChatPage) : 'general';
+};
+
 function ChatPanel({ projectId, open, onClose }: { projectId: string; open: boolean; onClose: () => void }) {
-  const suggestions = [t('ai.sug1'), t('ai.sug2'), t('ai.sug3')];
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const { pathname } = useLocation();
+  const suggestions = SUGGESTIONS[pageOf(pathname)].map((k) => t(k));
+  const { pending, consume } = useChat();
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadChat(projectId)); // history is saved per project
   const [input, setInput] = useState('');
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const handled = useRef<number | null>(null);
 
   // Stateless API (AI-1): send the whole conversation every time, last 30 messages.
   const chat = useMutation({
@@ -50,8 +69,9 @@ function ChatPanel({ projectId, open, onClose }: { projectId: string; open: bool
     onSuccess: (r) => setMessages((m) => [...m, r.message]),
   });
 
+  useEffect(() => saveChat(projectId, messages), [projectId, messages]);
   useEffect(() => { if (open) inputRef.current?.focus(); }, [open]);
-  useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [messages.length, chat.isPending, chat.isError]);
+  useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [messages.length, chat.isPending, chat.isError, open]);
 
   const send = (text: string) => {
     const msg = text.trim();
@@ -61,6 +81,16 @@ function ChatPanel({ projectId, open, onClose }: { projectId: string; open: bool
     setInput('');
     chat.mutate(next);
   };
+
+  // A message sent from another page ("Improve this todo", "Estimate"). If a reply is still loading, it waits its turn.
+  useEffect(() => {
+    if (!pending || chat.isPending || handled.current === pending.id) return;
+    handled.current = pending.id;
+    send(pending.text);
+    consume(pending.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending, chat.isPending]);
+
   const newChat = () => { setMessages([]); chat.reset(); };
 
   return (
@@ -89,6 +119,12 @@ function ChatPanel({ projectId, open, onClose }: { projectId: string; open: bool
         {chat.error && <ErrorBanner error={chat.error} onRetry={() => chat.mutate(messages)} />}
         <div ref={endRef} />
       </div>
+
+      {messages.length > 0 && !chat.isPending && (
+        <div className="chat-quick">
+          {suggestions.map((s) => <button key={s} className="chip-btn small" onClick={() => send(s)}>{s}</button>)}
+        </div>
+      )}
 
       <form className="chat-form" onSubmit={(e) => { e.preventDefault(); send(input); }}>
         <textarea
