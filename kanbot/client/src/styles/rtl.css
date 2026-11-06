@@ -1,0 +1,8 @@
+/* Right-to-left (Arabic) */
+:root[dir='rtl'] { --font: 'Noto Sans Arabic', 'Plus Jakarta Sans', system-ui, sans-serif; }
+[dir='rtl'] * { letter-spacing: 0 !important; } /* letter-spacing breaks Arabic letter joining */
+[dir='rtl'] .flip-rtl { transform: scaleX(-1); }
+@media (max-width: 900px) { [dir='rtl'] .sidebar:not(.open) { transform: translateX(120%); } }
+/* Keys like WEB-12 stay left-to-right; user-written text picks its own direction */
+.todo-key { direction: ltr; unicode-bidi: isolate; }
+.todo-title, .card-title, .goal, .card h3, .card p, .bubble.user { unicode-bidi: plaintext; }

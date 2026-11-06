@@ -1,0 +1,29 @@
+/* Shared todo list: rows, drag handle, drop zones, row menu */
+.todo-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.todo-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); text-align: start; font: inherit; color: var(--ink); }
+.todo-row:hover { border-color: var(--indigo); background: var(--hover); }
+.todo-key { color: var(--muted); font-weight: 600; white-space: nowrap; }
+.todo-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.todo-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+.due { color: var(--muted); font-size: 12px; white-space: nowrap; }
+@media (max-width: 720px) {
+  .todo-row { flex-wrap: wrap; }
+  .todo-title { flex-basis: calc(100% - 100px); white-space: normal; }
+  .todo-meta { flex-wrap: wrap; width: 100%; }
+}
+
+/* Drag and drop */
+.drop-zone { min-height: 12px; border-radius: 16px; transition: background .15s, outline-color .15s; outline: 2px dashed transparent; outline-offset: 2px; }
+.drop-zone.is-over { background: rgba(79,70,229,.06); outline-color: var(--indigo); }
+.drop-empty { padding: 18px; border: 2px dashed var(--line); border-radius: 16px; text-align: center; color: var(--muted); }
+.todo-item { position: relative; display: flex; align-items: center; gap: 4px; background: transparent; }
+.todo-item .todo-row { flex: 1; min-width: 0; width: auto; }
+.drag-handle { display: grid; place-items: center; width: 28px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: grab; touch-action: none; flex: none; }
+.drag-handle:hover { background: rgba(79,70,229,.1); color: var(--indigo-fg); }
+.drag-handle:active { cursor: grabbing; }
+.drag-overlay { box-shadow: 0 12px 28px rgba(19,26,42,.2); border-color: var(--indigo); cursor: grabbing; }
+.row-menu { position: relative; flex: none; }
+.drag-overlay { width: 100%; cursor: grabbing; }
+
+/* Rows load in batches as the page scrolls (react-infinite-scroll-component) */
+.list-more { padding: 12px; text-align: center; color: var(--muted); font-size: 13px; }

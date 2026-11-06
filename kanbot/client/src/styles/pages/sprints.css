@@ -1,0 +1,14 @@
+/* Sprints page (sprint sections + history list) */
+.sprint-section { margin-bottom: 24px; padding: 16px; border-radius: 22px; background: var(--surface-2); }
+.sprint-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.sprint-title { flex: 1; min-width: 180px; }
+.sprint-title h2 { font-size: 17px; }
+.sprint-actions { display: flex; align-items: center; gap: 4px; }
+.sprint-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.sprint-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 14px 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); color: inherit; text-decoration: none; }
+.sprint-card:hover { border-color: var(--indigo); }
+.sprint-card-title { display: flex; align-items: center; gap: 10px; }
+.sprint-card-title h3 { font-size: 16px; }
+.sprint-card-stats { display: flex; gap: 16px; color: var(--muted); font-size: 13px; flex-wrap: wrap; }
+.sprint-card-stats strong { color: var(--ink); }
+.start-hint { margin: 0 0 10px; color: var(--muted); font-size: 13px; }

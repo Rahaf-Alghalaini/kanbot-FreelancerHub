@@ -1,0 +1,32 @@
+/* Board page */
+.board-head { margin-bottom: 16px; padding: 16px; border-radius: 22px; background: var(--surface-2); }
+.board-head-top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.progress-row { display: flex; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+.progress { flex: 1; min-width: 160px; height: 10px; overflow: hidden; border-radius: 999px; background: var(--track); }
+.progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--indigo), var(--green)); transition: width .3s; }
+.progress-label { color: var(--muted); font-size: 13px; }
+.board { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; align-items: start; }
+.board > * { min-width: 0; }
+.column { padding: 10px; border-radius: 20px; background: var(--surface-2); transition: background .15s; }
+.column.is-over { background: rgba(79,70,229,.08); }
+.col-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 8px 12px; border-radius: 999px; font-weight: 600; }
+.col-todo .col-head { background: var(--neutral-bg); } .col-in_progress .col-head { background: var(--violet-bg); color: var(--violet-fg); }
+.col-in_review .col-head { background: var(--amber-bg); color: var(--amber-fg); } .col-done .col-head { background: var(--teal-bg); color: var(--teal-fg); }
+.col-title { display: inline-flex; align-items: center; gap: 8px; }
+.col-title .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.col-count { display: grid; place-items: center; min-width: 24px; height: 24px; border-radius: 999px; background: var(--glass-chip); font-size: 12px; }
+.col-body { display: grid; gap: 10px; min-height: 80px; align-content: start; }
+.board-card { padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.card-line { display: flex; align-items: center; gap: 8px; }
+.card-line .drag-handle { margin-inline-start: auto; }
+.drag-handle.small { width: 26px; height: 26px; }
+.card-main { display: grid; gap: 8px; width: 100%; padding: 6px 0 0; border: 0; background: transparent; text-align: start; font: inherit; color: var(--ink); }
+.card-title { font-weight: 600; overflow-wrap: anywhere; }
+.card-title.is-done { text-decoration: line-through; color: var(--muted); }
+.card-labels, .card-foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-foot .points { margin-inline-start: auto; }
+.board-card { cursor: grab; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.board-card:active { cursor: grabbing; }
+.board-card .grip { margin-inline-start: auto; color: var(--muted); opacity: .6; }
+.board-card:hover .grip { opacity: 1; color: var(--indigo-fg); }
+.column { min-height: 200px; }

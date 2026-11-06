@@ -1,0 +1,25 @@
+/* Design tokens: light theme on :root, dark theme via data-theme="dark" on <html> */
+:root {
+  color-scheme: light;
+  --indigo: #4f46e5; --indigo-d: #4338ca; --indigo-l: #eeedfd; --indigo-fg: #4f46e5; --green: #22c55e; --green-l: #e3f8ec;
+  --ink: #131a2a; --muted: #5b6475; --line: #e6e8f0; --danger: #dc2626; --danger-fg: #dc2626; --danger-l: #fdecec;
+  --page-bg: #e6e3f7; --surface: #fff; --surface-2: #f6f6fc; --hover: #f3f3fa;
+  --glass: rgba(255,255,255,.82); --glass-strong: rgba(255,255,255,.9); --glass-chip: rgba(255,255,255,.85);
+  --neutral-bg: #eceef5; --track: #e3e4ee; --faint: rgba(19,26,42,.08); --toast-bg: #131a2a;
+  --amber-bg: #fdebd6; --amber-fg: #b45309; --orange-fg: #c2410c; --blue-bg: #dfe8fc; --blue-fg: #1d4ed8;
+  --violet-bg: #ece3fb; --violet-fg: #5b21b6; --teal-bg: #dcf3ee; --teal-fg: #0f766e; --pink-bg: #fbe4f1; --green-fg: #15803d;
+  --c-amber: #d97706; --c-blue: #2563eb; --c-green: #16a34a; --c-pink: #db2777;
+  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+/* Dark theme: same tokens, different values (toggled with data-theme on <html>) */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --indigo: #6366f1; --indigo-d: #4f46e5; --indigo-l: rgba(99,102,241,.2); --indigo-fg: #a5b4fc; --green: #22c55e; --green-l: rgba(34,197,94,.16);
+  --ink: #e8eaf3; --muted: #9ba3b8; --line: #2c3349; --danger: #dc2626; --danger-fg: #f87171; --danger-l: rgba(248,113,113,.14);
+  --page-bg: #0e1120; --surface: #1a1f31; --surface-2: #151a2a; --hover: #232a40;
+  --glass: rgba(22,26,41,.82); --glass-strong: rgba(22,26,41,.92); --glass-chip: rgba(255,255,255,.12);
+  --neutral-bg: #262d43; --track: #2a3148; --faint: rgba(255,255,255,.1); --toast-bg: #2a3148;
+  --amber-bg: rgba(245,158,11,.18); --amber-fg: #fbbf24; --orange-fg: #fdba74; --blue-bg: rgba(59,130,246,.2); --blue-fg: #93c5fd;
+  --violet-bg: rgba(139,92,246,.22); --violet-fg: #c4b5fd; --teal-bg: rgba(20,184,166,.18); --teal-fg: #5eead4; --pink-bg: rgba(236,72,153,.18); --green-fg: #4ade80;
+  --c-amber: #fbbf24; --c-blue: #60a5fa; --c-green: #4ade80; --c-pink: #f472b6;
+}

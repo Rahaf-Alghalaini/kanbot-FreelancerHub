@@ -1,0 +1,5 @@
+/* Dark theme details */
+:root[data-theme='dark'] body::before { filter: brightness(.3) saturate(.9); }
+:root[data-theme='dark'] .btn-primary { box-shadow: 0 6px 16px rgba(0,0,0,.35); }
+:root[data-theme='dark'] .menu, :root[data-theme='dark'] .drawer { box-shadow: 0 10px 28px rgba(0,0,0,.5); }
+:root[data-theme='dark'] input::placeholder, :root[data-theme='dark'] textarea::placeholder { color: var(--muted); }

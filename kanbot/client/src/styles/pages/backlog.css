@@ -1,0 +1,15 @@
+/* Backlog page */
+.quick { margin-bottom: 14px; display: grid; gap: 6px; }
+.quick-row, .filters { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.quick-row input { flex: 1; min-width: 200px; }
+.quick input, .quick select, .filters select, .search { padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font: inherit; color: var(--ink); }
+.quick input:focus, .search:focus-within { border-color: var(--indigo); outline: 2px solid var(--indigo-l); }
+.filters { margin-bottom: 16px; }
+.search { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px; color: var(--muted); }
+.search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; color: var(--ink); }
+.notice { margin-bottom: 16px; padding: 12px 14px; border-radius: 14px; background: var(--green-l); color: var(--green-fg); }
+.notice a { color: inherit; font-weight: 600; }
+.backlog-section { margin-bottom: 24px; padding: 16px; border-radius: 22px; background: var(--surface-2); }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--muted); }
+.section-head h2 { color: var(--ink); }
+.section-head h2 { font-size: 17px; }

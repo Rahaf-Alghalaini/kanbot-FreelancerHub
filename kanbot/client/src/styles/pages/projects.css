@@ -1,0 +1,12 @@
+/* Projects page */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.card { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 22px; border: 2px solid transparent; }
+.card.is-active { border-color: var(--indigo); }
+.card:nth-child(4n+1) { background: var(--teal-bg); } .card:nth-child(4n+2) { background: var(--violet-bg); }
+.card:nth-child(4n+3) { background: var(--amber-bg); } .card:nth-child(4n+4) { background: var(--blue-bg); }
+.card-top { display: flex; align-items: center; gap: 8px; }
+.card h3 { font-size: 17px; }
+.card p { color: var(--muted); min-height: 21px; }
+.card-stats { display: flex; gap: 14px; padding-top: 10px; border-top: 1px solid var(--faint); font-size: 13px; color: var(--muted); }
+.card-actions { display: flex; gap: 8px; margin-top: auto; }
+.card-actions .spacer { flex: 1; }

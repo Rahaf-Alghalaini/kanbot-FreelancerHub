@@ -1,0 +1,10 @@
+/* Sprint details page */
+.back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; color: var(--indigo-fg); font-weight: 600; text-decoration: none; }
+.details-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.details-head h2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.tile { display: grid; gap: 2px; padding: 16px; border-radius: 18px; background: var(--indigo-l); }
+.tile:nth-child(2) { background: var(--green-l); } .tile:nth-child(3) { background: var(--amber-bg); } .tile:nth-child(4) { background: var(--pink-bg); }
+.tile small { color: var(--muted); } .tile strong { font-size: 26px; letter-spacing: -.02em; } .tile span { color: var(--muted); font-size: 12px; }
+.todo-row.static { cursor: default; list-style: none; }
+.todo-row.static:hover { border-color: var(--line); background: var(--surface); }

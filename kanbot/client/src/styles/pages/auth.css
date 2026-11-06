@@ -1,0 +1,11 @@
+/* Login + Register */
+.auth { min-height: 100vh; display: grid; place-items: center; padding: 20px; }
+.auth-card { width: min(420px, 100%); padding: 32px; border-radius: 28px; background: var(--glass-strong); backdrop-filter: blur(14px); }
+.auth-card .brand { padding: 0; margin-bottom: 6px; }
+.auth-card .tagline { color: var(--muted); margin-bottom: 22px; }
+.auth-card h1 { font-size: 22px; margin-bottom: 16px; }
+.auth-card .btn { width: 100%; margin-top: 4px; }
+.auth-switch { margin-top: 16px; text-align: center; color: var(--muted); }
+.auth-switch a { color: var(--indigo-fg); font-weight: 600; }
+.auth { position: relative; }
+.auth > .prefs { position: absolute; top: 16px; inset-inline-end: 16px; margin: 0; }
