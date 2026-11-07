@@ -4,7 +4,7 @@ import { ar } from './ar';
 export type Lang = 'en' | 'ar';
 export type Key = keyof typeof en;
 /** A plural family such as 'n.task' (it has 'n.task.one', 'n.task.other', …). */
-export type PluralBase = Key extends `${infer B}.other` ? B : never;
+export type PluralBase = { [K in Key]: K extends `${infer B}.other` ? B : never }[Key];
 type Vars = Record<string, string | number>;
 
 const STORE = 'kanbot.lang';
