@@ -33,7 +33,7 @@
 .export-wrap { position: relative; display: inline-block; }
 .head-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-.chat-quick { display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 2px; scrollbar-width: thin; }
+.chat-quick { display: grid; gap: 6px; overflow-x: auto; padding: 8px 0 2px; scrollbar-width: thin; }
 .chip-btn.small { flex: none; padding: 5px 12px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
 
 /* The todo dialog footer now holds four buttons; let it wrap on narrow screens */
