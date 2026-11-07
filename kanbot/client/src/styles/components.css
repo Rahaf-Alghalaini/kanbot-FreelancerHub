@@ -43,7 +43,7 @@
 .modal-head h2 { font-size: 18px; }
 .modal.wide { width: min(640px, 100%); }
 .field select { width: 100%; padding: 11px 14px; border: 1px solid var(--line); border-radius: 14px; font: inherit; background: var(--surface); color: var(--ink); }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0 12px; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0 12px; align-items: start; }
 .form-actions.split { align-items: center; }
 .form-actions .spacer { flex: 1; }
 .danger-text { color: var(--danger-fg); }
