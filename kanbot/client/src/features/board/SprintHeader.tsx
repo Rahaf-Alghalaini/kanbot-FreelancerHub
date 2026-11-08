@@ -24,7 +24,7 @@ export function SprintHeader({ sprint, onComplete, onRescue }: { sprint: Sprint;
           <span><CalendarDays size={14} /> {formatRange(sprint.startDate, sprint.endDate)}</span>
           {sprint.endDate && <strong>{daysLeftLabel(sprint.endDate)}</strong>}
         </div>
-        {onRescue && <Button variant="ghost" onClick={onRescue}><LifeBuoy size={16} /> {t('rescue.open')}</Button>}
+      
         <Button onClick={onComplete}><CheckCheck size={16} /> {t('sprint.complete')}</Button>
       </div>
       <div className="progress-row">
