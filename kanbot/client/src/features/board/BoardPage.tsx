@@ -12,6 +12,8 @@ import { t } from '../../i18n';
 import { boardCollision } from '../../lib/dnd';
 import { useSprintBoardQuery, useSprintsQuery } from '../../hooks/useSprints';
 import { SprintSummaryCard } from '../ai/SprintSummaryCard';
+import { RescueBanner } from '../rescue/RescueBanner';
+import { RescueDialog } from '../rescue/RescueDialog';
 import { BurndownCard } from '../charts/BurndownCard';
 import { CompleteSprintDialog } from '../sprints/CompleteSprintDialog';
 import { TodoDetailsDialog } from '../todos/TodoDetailsDialog';
@@ -51,6 +53,7 @@ function ActiveBoard({ projectId, sprintId }: { projectId: string; sprintId: str
   const [selected, setSelected] = useState<Todo | null>(null);
   const [dragging, setDragging] = useState<Todo | null>(null);
   const [completing, setCompleting] = useState(false);
+  const [rescuing, setRescuing] = useState(false);
   // Mouse: drag after 5px. Touch: press and hold 150ms (so the page can still scroll). Keyboard: Space on a focused card.
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
@@ -105,7 +108,8 @@ function ActiveBoard({ projectId, sprintId }: { projectId: string; sprintId: str
 
   return (
     <>
-      <SprintHeader sprint={sprint} onComplete={() => setCompleting(true)} />
+      <SprintHeader sprint={sprint} onComplete={() => setCompleting(true)} onRescue={() => setRescuing(true)} />
+      <RescueBanner sprint={sprint} todos={TODO_STATUSES.flatMap((s) => columns[s])} onOpen={() => setRescuing(true)} />
       <BurndownCard sprint={sprint} todos={TODO_STATUSES.flatMap((s) => columns[s])} />
       <SprintSummaryCard sprint={sprint} />
       <DndContext sensors={sensors} collisionDetection={boardCollision} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={endDrag}>
@@ -125,6 +129,7 @@ function ActiveBoard({ projectId, sprintId }: { projectId: string; sprintId: str
         )}
       </DndContext>
       <TodoDetailsDialog todo={selected} onClose={() => setSelected(null)} />
+      <RescueDialog sprint={rescuing ? sprint : null} projectId={projectId} todos={TODO_STATUSES.flatMap((s) => columns[s])} onClose={() => setRescuing(false)} />
       <CompleteSprintDialog sprint={completing ? sprint : null} projectId={projectId} onClose={() => setCompleting(false)} />
     </>
   );

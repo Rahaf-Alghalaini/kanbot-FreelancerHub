@@ -1,4 +1,4 @@
-import { CalendarDays, CheckCheck } from 'lucide-react';
+import { CalendarDays, CheckCheck, LifeBuoy } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { daysLeftLabel, formatRange } from '../../lib/format';
 import { rich, t } from '../../i18n';
@@ -10,7 +10,7 @@ export function progressPercent(s: Sprint['stats']) {
 }
 
 /** SPR-4: goal, dates, days left and progress. */
-export function SprintHeader({ sprint, onComplete }: { sprint: Sprint; onComplete: () => void }) {
+export function SprintHeader({ sprint, onComplete, onRescue }: { sprint: Sprint; onComplete: () => void; onRescue?: () => void }) {
   const { stats } = sprint;
   const pct = progressPercent(stats);
   return (
@@ -24,6 +24,7 @@ export function SprintHeader({ sprint, onComplete }: { sprint: Sprint; onComplet
           <span><CalendarDays size={14} /> {formatRange(sprint.startDate, sprint.endDate)}</span>
           {sprint.endDate && <strong>{daysLeftLabel(sprint.endDate)}</strong>}
         </div>
+        {onRescue && <Button variant="ghost" onClick={onRescue}><LifeBuoy size={16} /> {t('rescue.open')}</Button>}
         <Button onClick={onComplete}><CheckCheck size={16} /> {t('sprint.complete')}</Button>
       </div>
       <div className="progress-row">
